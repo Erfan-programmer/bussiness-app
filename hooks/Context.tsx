@@ -1,5 +1,6 @@
-import  { createContext, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { BlogType , FeatureType , TeamType , TestimonialType} from "./../types/blog";
+import {Blogs} from "./../data/db"
 interface ItemsType {
   BlogItems: BlogType[];
   featuresItems:FeatureType[];
@@ -25,24 +26,20 @@ function BlogItemProvider({
   const [featuresItems, setFeaturesItems] = useState<FeatureType[]>([]);
   const [TeamItems, setTeamItems] = useState<TeamType[]>([]);
   const [TestimonialItems, setTestimonialItems] = useState<TestimonialType[]>([]);
+
   useEffect(() => {
-    const getBlog = async () => {
-      const res = await fetch("/data/db.json", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (res.status === 200) {
-        const data = await res.json();
-        setBlogItems(data.blogs);
-        setFeaturesItems(data.Feature)
-        setTeamItems(data.teams)
-        setTestimonialItems(data.testimonial)
-      }
-    };
-    getBlog();
+    setBlogItems(
+      Blogs.blogs.map((item) => ({
+        ...item,
+        role: '',
+        date: '',
+      }))
+    );
+    setFeaturesItems(Blogs.Feature);
+    setTeamItems(Blogs.teams);
+    setTestimonialItems(Blogs.testimonial);
   }, []);
+
 
   return (
     <ContextItem.Provider value={{ BlogItems , featuresItems , TeamItems , TestimonialItems }}>
